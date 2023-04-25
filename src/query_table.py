@@ -139,11 +139,10 @@ class QueryLibrary:
 if __name__ == '__main__':
     data = {
         "date_added": {
-            "lower": "2023/01/01",
+            "lower": "2022/12/01",
             "higher": "2023/04/24"
         },
-        "author": "Ter",
-        "title": "feet"
+        "author": "Agatha",
     }
 
     data = json.dumps(data)
