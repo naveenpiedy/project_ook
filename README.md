@@ -72,7 +72,7 @@ data = {
 
 Will create an SVG image to the folder called `output_imgs` inside src. The Output will be something like below
 
-![Output](./sample_img/agatha_christie_books_i_like.svg)
+![Output](src/sample_img/agatha_christie_books_i_like.svg)
 ## Authors
 
 - [@naveenpiedy](https://github.com/naveenpiedy)
