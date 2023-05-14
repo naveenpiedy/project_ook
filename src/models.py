@@ -25,9 +25,9 @@ def sha_gen(book_id, date_added):
 class MainLibrary(Base):
     __tablename__ = "main_library"
 
-    id = Column(Integer, primary_key=True)
-    book_id = Column(BigInteger, index=True, unique=True)
-    sha = Column(String, unique=True, index=True, nullable=False)
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    book_id = Column(BigInteger, index=True)
+    sha = Column(String, primary_key=True, index=True)
     title = Column(String, index=True)
     author = Column(String, index=True)
     author_lf = Column(String, index=True)

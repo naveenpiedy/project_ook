@@ -1,8 +1,10 @@
 import json
 import re
 from random import shuffle
+from typing import List, Dict, Any
 
 import pandas as pd
+from pandas import DataFrame
 from rich.console import Console
 from rich.table import Table
 from rich.terminal_theme import MONOKAI
@@ -18,24 +20,36 @@ COLORS = [
 ]
 
 
-def get_output(query, parameters_to_print=None, title_to_use=None):
-    data = json.dumps(query)
-    db = QueryLibrary(data)
+def get_output(query: Dict[str, Any], parameters_to_print: List[str] = None) -> DataFrame:
+    """
+    Query the database, Clean the data, filter it to only parameters required
+    :param query: Dict. Input query
+    :param parameters_to_print: List of str. Col names. Specify the col names to print
+    """
+    query_json = json.dumps(query)
+    db = QueryLibrary(query_json)
     result = json.loads(db.select_query_db())
     result_items = [i for i in result.values()]
-    df = pd.DataFrame(result_items)
-    df['title'] = df['title'].apply(title_cleaner)
+    result_df = pd.DataFrame(result_items)
+    result_df['title'] = result_df['title'].apply(book_title_cleaner)
     if parameters_to_print:
-        df = df[parameters_to_print]
+        result_df = result_df[parameters_to_print]
 
-    print_data(df, title_to_use)
+    return result_df
+
+    # print_data(result_df, title_to_use)
 
 
-def print_data(df, title):
+def print_data(results_df: DataFrame, title: str):
+    """
+    Print the result in a Table Format and also generate an SVG to share
+    :param results_df: Cleaned up Dataframe from get_output
+    :param title: Title for the search
+    """
     console = Console(record=True, width=100)
     table = Table(title=title, title_style="blue bold", border_style="dodger_blue2")
 
-    headers = df.columns.values.tolist()
+    headers = results_df.columns.values.tolist()
     shuffled_colors = COLORS
     shuffle(shuffled_colors)
 
@@ -45,7 +59,7 @@ def print_data(df, title):
         else:
             table.add_column(header, justify="center", style=shuffled_colors.pop(), no_wrap=True)
 
-    for value in df.values:
+    for value in results_df.values:
         value = [str(i) for i in value]
         table.add_row(*value)
 
@@ -54,7 +68,14 @@ def print_data(df, title):
     console.save_svg(f"output_imgs/{title}.svg", title=title, theme=MONOKAI)
 
 
-def title_cleaner(title):
+def book_title_cleaner(title: str) -> str:
+    """
+    Titles of book often contain series information
+    Example: 'The Mystery of the Blue Train (Hercule Poirot, #6)'
+    Cleaning this to 'The Mystery of the Blue Train'
+    :param title: str
+    :return: str
+    """
     cleaned_title = re.sub(r"\(.*\)", "", title)
     cleaned_title = cleaned_title.strip()
     return cleaned_title
@@ -70,4 +91,5 @@ if __name__ == '__main__':
         }
     }
 
-    get_output(data, ["title", "og_year_pub", "avg_rating"], title_to_use="Agatha Christie Books I like")
+    result = get_output(data, ["title", "og_year_pub", "avg_rating"])
+    print_data(result, title="Agatha Christie Books I like")
