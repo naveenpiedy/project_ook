@@ -8,11 +8,10 @@ from sqlalchemy import (
     String,
     Float,
     Date,
-    ARRAY,
-    Enum,
     Text,
     Boolean,
 )
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from src.base import Base
 
@@ -108,7 +107,9 @@ class MainLibrary(Base):
     @staticmethod
     def convert_to_list(list_str):
         if list_str:
-            return list_str.split(",")
+            list_str = list_str.split(",")
+            list_str = [i.strip() for i in list_str]
+            return list_str
 
     @staticmethod
     def convert_boolean(boolean_str):

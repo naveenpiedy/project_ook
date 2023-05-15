@@ -1,6 +1,7 @@
 import itertools
 import json
 import datetime
+from pprint import pprint
 from typing import Set, Dict, Any
 
 from src.base import Session, engine
@@ -176,11 +177,12 @@ if __name__ == '__main__':
             "lower": "2022/12/01",
             "higher": "2023/04/24"
         },
-        "author": "Agatha",
+        "author": "Terry",
+        'tags': ['discworld']
     }
 
     data = json.dumps(data)
     db = QueryLibrary(data)
     result = json.loads(db.select_query_db())
 
-    print(result.keys())
+    pprint(result)

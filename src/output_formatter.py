@@ -83,13 +83,13 @@ def book_title_cleaner(title: str) -> str:
 
 if __name__ == '__main__':
     data = {
-        "author": "Agatha",
+        "tags": ['discworld'],
         "status": "read",
         "my_rating": {
-            "lower": "4.0",
+            "lower": "3.0",
             "higher": "6.0"
         }
     }
 
-    result = get_output(data, ["title", "og_year_pub", "avg_rating"])
-    print_data(result, title="Agatha Christie Books I like")
+    result = get_output(data, ["title", "avg_rating", "my_rating", "number_of_pages"])
+    print_data(result, title="Discworld City Watch")
